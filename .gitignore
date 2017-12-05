@@ -1,0 +1,18 @@
+# Python #
+##########
+/*.egg-info
+/bin
+/build
+/dist
+/lib
+/lib64
+/man
+/pip-selfcheck.json
+/pyvenv.cfg
+/share
+__pycache__
+
+# Vim #
+#######
+.*.swp
+.*.un~
