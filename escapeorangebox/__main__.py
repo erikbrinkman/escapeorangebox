@@ -21,11 +21,6 @@ def truthy_mode(iterable):
             or [[None]])[0][0]
 
 
-def truthy_mode_order(iterable):
-    return [v[0] for v
-            in collections.Counter((i for i in iterable if i)).most_common()]
-
-
 def normalize_track(title, artist, trackNumber, durationMillis, genre='',
                     storeId=None, **_):
     return {
@@ -34,7 +29,7 @@ def normalize_track(title, artist, trackNumber, durationMillis, genre='',
         'genre': genre,
         'track': trackNumber,
         'duration_ms': int(durationMillis),
-        'ids': {} if storeId is None else {'google': storeId},
+        'ids': {'google': storeId},
         'type': 'track',
     }
 
@@ -50,17 +45,18 @@ def normalize_album(name='', artist='', tracks=[], year=None, albumId=None,
                          key=lambda t: t['track']),
         'num_tracks': max(max(t['trackNumber'] for t in tracks),
                           len(tracks)) if tracks else 0,
-        'art': truthy_mode_order(itertools.chain.from_iterable(
+        'art': truthy_mode(itertools.chain.from_iterable(
             (a['url'] for a in t.get('albumArtRef', ())) for t in tracks)),
-        'ids': {} if albumId is None else {'google': albumId},
+        'ids': {'google': albumId},
         'year': year or truthy_mode(t.get('year', None) for t in tracks),
         'type': 'album',
     }
 
 
-def normalize_playlist(name, tracks, **_):
+def normalize_playlist(name, tracks, description='', **_):
     return {
         'name': name,
+        'description': description,
         'tracks': [normalize_track(**t) for t in tracks],
         'type': 'playlist',
     }
